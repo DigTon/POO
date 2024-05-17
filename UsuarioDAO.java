@@ -22,7 +22,7 @@ public class UsuarioDAO {
             stmt.setString(3, usuario.getEmail());
             stmt.setString(4, usuario.getDataNascimento());
             stmt.setString(5, usuario.getSexo());
-            stmt.setInt(6, usuario.getTipoDiabetes());
+            stmt.setString(6, usuario.getTipoDiabetes());
             stmt.setString(7, usuario.getDataDiagnostico());
             stmt.setInt(8, usuario.getNivelAcucarSangue());
             stmt.setFloat(9, usuario.getPeso());
@@ -51,7 +51,7 @@ public class UsuarioDAO {
             stmt.setString(3, usuario.getEmail());
             stmt.setString(4, usuario.getDataNascimento());
             stmt.setString(5, usuario.getSexo());
-            stmt.setInt(6, usuario.getTipoDiabetes());
+            stmt.setString(6, usuario.getTipoDiabetes());
             stmt.setString(7, usuario.getDataDiagnostico());
             stmt.setInt(8, usuario.getNivelAcucarSangue());
             stmt.setFloat(9, usuario.getPeso());

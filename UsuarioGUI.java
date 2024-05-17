@@ -4,18 +4,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.sql.Connection;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class UsuarioGUI extends JFrame {
 
-
+    // Cores
+    private Color primaryColor = new Color(0, 123, 255); // Azul
+    private Color secondaryColor = new Color(248, 249, 250); // Cinza
+    private Color darkTextColor = new Color(34, 34, 34); // Cinza
     private JTextField txtNome;
     private JTextField txtCpf;
     private JTextField txtEmail;
-    private JTextField txtDataNascimento;
+    private JFormattedTextField txtDataNascimento;
     private JComboBox<String> cbSexo;
-    private JTextField txtTipoDiabetes;
-    private JTextField txtDataDiagnostico;
+    private JComboBox<String> cbTipoDiabetes;
+    private JFormattedTextField txtDataDiagnostico;
     private JTextField txtNivelAcucarSangue;
     private JTextField txtPeso;
     private JTextField txtAltura;
@@ -32,111 +36,143 @@ public class UsuarioGUI extends JFrame {
     public UsuarioGUI() {
         super("Criar Usuário");
 
-
         try {
             this.conexao = ConexaoBanco.obterConexao();
         } catch (SQLException e) {
-            System.err.println("Erro ao conectar ao banco de dados.");
-            e.printStackTrace();
+            System.err.println("Erro ao conectar ao banco de dados: " + e.getMessage());
         }
 
-
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(400, 600);
+        setSize(600, 800);
         setLocationRelativeTo(null);
 
-        getContentPane().setBackground(new Color(248, 249, 250));
+        // Painel principal
+        JPanel painel = new JPanel(new GridBagLayout());
+        painel.setBackground(secondaryColor);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10); // Espaçamento entre componentes
 
-        Color azulPrincipal = new Color(0, 123, 255);
-        Color cinzaClaro = new Color(248, 249, 250);
-        Color cinzaEscuro = new Color(34, 34, 34);
-        Color branco = Color.WHITE;
+        // Título
+        JLabel lblTitulo = new JLabel("Criar Usuário");
+        lblTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTitulo.setForeground(primaryColor);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+        painel.add(lblTitulo, gbc);
 
-        JPanel painel = new JPanel(new GridLayout(16, 2, 10, 10));
+        adicionarCampo(painel, "Nome:", txtNome = new JTextField(), 1);
 
-        painel.add(new JLabel("Nome:"));
-        txtNome = new JTextField();
-        painel.add(txtNome);
 
-        painel.add(new JLabel("CPF:"));
-        txtCpf = new JTextField();
-        painel.add(txtCpf);
+        adicionarCampo(painel, "CPF:", txtCpf = new JTextField(), 2);
 
-        painel.add(new JLabel("Email:"));
-        txtEmail = new JTextField();
-        painel.add(txtEmail);
+        adicionarCampo(painel, "Email:", txtEmail = new JTextField(), 3);
 
-        painel.add(new JLabel("Data de Nascimento (DD/MM/AAAA):"));
-        txtDataNascimento = new JTextField();
-        painel.add(txtDataNascimento);
+        // Data de Nascimento
+        adicionarCampo(painel, "Data de Nascimento (DD/MM/AAAA):",
+                txtDataNascimento = new JFormattedTextField(new SimpleDateFormat("dd/MM/yyyy")), 4);
 
-        painel.add(new JLabel("Sexo:"));
-        cbSexo = new JComboBox<>(new String[]{"M", "F"});
-        painel.add(cbSexo);
+        // Sexo
+        adicionarCampo(painel, "Sexo:", cbSexo = new JComboBox<>(new String[]{"M", "F"}), 5);
 
-        painel.add(new JLabel("Tipo de Diabetes:"));
-        txtTipoDiabetes = new JTextField();
-        painel.add(txtTipoDiabetes);
+        // Tipo de Diabetes
+        adicionarCampo(painel, "Tipo de Diabetes:",
+                cbTipoDiabetes = new JComboBox<>(new String[]{"Tipo 1", "Tipo 2", "Gestacional", "Outros"}), 6);
 
-        painel.add(new JLabel("Data de Diagnóstico (DD/MM/AAAA):"));
-        txtDataDiagnostico = new JTextField();
-        painel.add(txtDataDiagnostico);
+        // Data de Diagnóstico
+        adicionarCampo(painel, "Data de Diagnóstico (DD/MM/AAAA):",
+                txtDataDiagnostico = new JFormattedTextField(new SimpleDateFormat("dd/MM/yyyy")), 7);
 
-        painel.add(new JLabel("Nível de Açúcar no Sangue:"));
-        txtNivelAcucarSangue = new JTextField();
-        painel.add(txtNivelAcucarSangue);
+        // Nível de Açúcar no Sangue
+        adicionarCampo(painel, "Nível de Açúcar no Sangue (mg/dL):",
+                txtNivelAcucarSangue = new JTextField(), 8);
 
-        painel.add(new JLabel("Peso (kg):"));
-        txtPeso = new JTextField();
-        painel.add(txtPeso);
+        // Peso
+        adicionarCampo(painel, "Peso (kg):", txtPeso = new JTextField(), 9);
 
-        painel.add(new JLabel("Altura (m):"));
-        txtAltura = new JTextField();
-        painel.add(txtAltura);
+        // Altura
+        adicionarCampo(painel, "Altura (m):", txtAltura = new JTextField(), 10);
 
-        painel.add(new JLabel("Pressão Arterial:"));
-        txtPressaoArterial = new JTextField();
-        painel.add(txtPressaoArterial);
+        // Pressão Arterial
+        adicionarCampo(painel, "Pressão Arterial (mmHg):", txtPressaoArterial = new JTextField(), 11);
 
-        painel.add(new JLabel("Histórico Médico:"));
-        txtHistoricoMedico = new JTextArea(3, 20);
-        painel.add(new JScrollPane(txtHistoricoMedico));
+        // Histórico Médico
+        adicionarCampoTextArea(painel, "Histórico Médico:", txtHistoricoMedico = new JTextArea(3, 20), 12);
 
-        painel.add(new JLabel("Medicamentos:"));
-        txtMedicamentos = new JTextArea(3, 20);
-        painel.add(new JScrollPane(txtMedicamentos));
+        // Medicamentos
+        adicionarCampoTextArea(painel, "Medicamentos:", txtMedicamentos = new JTextArea(3, 20), 13);
 
-        painel.add(new JLabel("Alergias:"));
-        txtAlergias = new JTextArea(3, 20);
-        painel.add(new JScrollPane(txtAlergias));
+        // Alergias
+        adicionarCampoTextArea(painel, "Alergias:", txtAlergias = new JTextArea(3, 20), 14);
 
-        painel.add(new JLabel("Senha:"));
-        txtSenha = new JPasswordField();
-        painel.add(txtSenha);
+        // Senha
+        adicionarCampo(painel, "Senha:", txtSenha = new JPasswordField(), 15);
 
+        // Botão Criar
         btnCriar = new JButton("Criar Usuário");
+        btnCriar.setBackground(primaryColor);
+        btnCriar.setForeground(Color.WHITE);
         btnCriar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 criarUsuario();
             }
         });
-        painel.add(btnCriar);
+        gbc.gridx = 0;
+        gbc.gridy = 16;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        painel.add(btnCriar, gbc);
 
+        // Botão Limpar
         btnLimpar = new JButton("Limpar Dados");
+        btnLimpar.setBackground(Color.LIGHT_GRAY);
         btnLimpar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 limparCampos();
             }
         });
-        painel.add(btnLimpar);
+        gbc.gridx = 1;
+        gbc.gridy = 16;
+        painel.add(btnLimpar, gbc);
 
         add(painel);
 
         setVisible(true);
     }
+
+    // Método auxiliar para adicionar campos de texto
+    private void adicionarCampo(JPanel painel, String labelText, JComponent componente, int gridy) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.anchor = GridBagConstraints.WEST;
+        painel.add(new JLabel(labelText), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        painel.add(componente, gbc);
+    }
+
+    // Método auxiliar para adicionar campos de texto de área
+    private void adicionarCampoTextArea(JPanel painel, String labelText, JTextArea componente, int gridy) {
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 10, 5, 10);
+        gbc.gridx = 0;
+        gbc.gridy = gridy;
+        gbc.anchor = GridBagConstraints.WEST;
+        painel.add(new JLabel(labelText), gbc);
+
+        gbc.gridx = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        painel.add(new JScrollPane(componente), gbc);
+    }
+
+
+
 
     private void criarUsuario() {
         UsuarioDAO dao = new UsuarioDAO();
@@ -145,10 +181,12 @@ public class UsuarioGUI extends JFrame {
             usuario.setNome(txtNome.getText());
             usuario.setCpf(txtCpf.getText());
             usuario.setEmail(txtEmail.getText());
-            usuario.setDataNascimento(txtDataNascimento.getText());
-            usuario.setSexo(cbSexo.getSelectedItem().toString());
-            usuario.setTipoDiabetes(String.valueOf(Integer.parseInt(txtTipoDiabetes.getText())));
-            usuario.setDataDiagnostico(txtDataDiagnostico.getText());
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            usuario.setDataNascimento(dateFormat.format(dateFormat.parse(txtDataNascimento.getText())));            usuario.setSexo(cbSexo.getSelectedItem().toString());
+
+            usuario.setTipoDiabetes(cbTipoDiabetes.getSelectedItem().toString());
+            usuario.setDataDiagnostico(dateFormat.format(dateFormat.parse(txtDataDiagnostico.getText())));
             usuario.setNivelAcucarSangue(Integer.parseInt(txtNivelAcucarSangue.getText()));
             usuario.setPeso(Float.parseFloat(txtPeso.getText()));
             usuario.setAltura(Float.parseFloat(txtAltura.getText()));
@@ -166,7 +204,9 @@ public class UsuarioGUI extends JFrame {
         } catch (SQLException ex) {
             JOptionPane.showMessageDialog(this, "Erro ao criar usuário: " + ex.getMessage());
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Erro: Insira dados numéricos válidos para Tipo de Diabetes, Nível de Açúcar no Sangue, Peso e Altura.");
+            JOptionPane.showMessageDialog(this, "Erro: Insira dados numéricos válidos para Nível de Açúcar no Sangue, Peso e Altura.");
+        } catch (ParseException ex) {
+            JOptionPane.showMessageDialog(this, "Erro: Insira datas válidas no formato DD/MM/AAAA.");
         }
     }
 
@@ -175,8 +215,8 @@ public class UsuarioGUI extends JFrame {
         txtCpf.setText("");
         txtEmail.setText("");
         txtDataNascimento.setText("");
-        cbSexo.setSelectedItem("");
-        txtTipoDiabetes.setText("");
+        cbSexo.setSelectedIndex(0); // Reset ComboBox
+        cbTipoDiabetes.setSelectedIndex(0); // Reset ComboBox
         txtDataDiagnostico.setText("");
         txtNivelAcucarSangue.setText("");
         txtPeso.setText("");

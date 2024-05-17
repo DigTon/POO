@@ -8,7 +8,7 @@ public class Usuario {
     private String email;
     private String dataNascimento;
     private String sexo;
-    private int tipoDiabetes;
+    private String tipoDiabetes;
     private String dataDiagnostico;
     private int nivelAcucarSangue;
     private float peso;
@@ -26,9 +26,9 @@ public class Usuario {
         this.cpf = "";
         this.email = "";
         this.senha = "";
-        this.dataNascimento = ""; // Inicialize dataNascimento
+        this.dataNascimento = "";
         this.sexo = "";
-        this.tipoDiabetes = 0;
+        this.tipoDiabetes = "";
         this.dataDiagnostico = "";
         this.nivelAcucarSangue = 0;
         this.peso = 0.0f;
@@ -105,12 +105,12 @@ public class Usuario {
         this.sexo = sexo;
     }
 
-    public int getTipoDiabetes() {
+    public String getTipoDiabetes() {
         return tipoDiabetes;
     }
 
     public void setTipoDiabetes(String tipoDiabetes) {
-        this.tipoDiabetes = Integer.parseInt(tipoDiabetes);
+        this.tipoDiabetes = tipoDiabetes;
     }
 
     public String getDataDiagnostico() {
